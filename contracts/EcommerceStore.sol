@@ -196,7 +196,7 @@ contract EcommerceStore {
         return (productDetails.highestBidder, productDetails.highestBid, productDetails.secondHighestBid, productDetails.totalBids);
     }
 
-    //4.终结拍卖的方法
+    //4.终结拍卖的方法，终结后进入仲裁阶段
     mapping(uint => address) public productToEscrow;//存储产品id和仲裁合约地址的集合
     function finalaizeAuction(uint _productId) public {
 
@@ -233,5 +233,20 @@ contract EcommerceStore {
 
         //因为以次高价成交，比用户意向价格要低，需退还差价 30- 25 = 5 ， 30是理想出价，25是次高
         buyer.transfer(productDetails.highestBid - productDetails.secondHighestBid);
+    }
+    // 5.获取仲裁信息方法（在主合约中）
+    function getEscrowInfo(uint _productId) public view returns (address, address, address, uint, uint) {
+        address payable escrowAddr = address(int160(productToEscrow[_productId]));
+        return Escrow(escrowAddr).escrowInfo();
+    }
+    // 6.给卖家投票的方法
+    function giveToSeller(uint _productId) public {
+        address payable escrowAddr = address(int160(productToEscrow[_productId]));
+        Escrow(escrowAddr).giveMoneyToSeller(msg.sender); //把调用人传给Escrow合约
+    }
+    // 7.给买家投票的方法
+    function giveToBuyer(uint _productId) public {
+        address payable escrowAddr = address(int160(productToEscrow[_productId]));
+        Escrow(escrowAddr).giveMoneyToBuyer(msg.sender); //把调用人传给Escrow合约
     }
 }

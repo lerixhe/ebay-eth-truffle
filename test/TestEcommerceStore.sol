@@ -21,6 +21,9 @@ contract TestEcommerceStore {
     es.revealBid(1,1000,"lalala");
     es.revealBid(1,2000,"heiheihei");
     es.revealBid(1,1500,"wawawa");
+
+    // 注意：本测试不能既是买家/卖家，还做仲裁
+
   }
   // 测试合约产品id计数器的状态
   function testEcommerceStoreproductIndex() public {
