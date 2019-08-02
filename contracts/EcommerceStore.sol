@@ -203,7 +203,7 @@ contract EcommerceStore {
         ProductDetails storage productDetails = ProductId2ProductDetails[_productId];
 
         address payable buyer = productDetails.highestBidder; //买家
-        address seller = ProductId2Owner[_productId];//卖家
+        address payable seller = address(int160(ProductId2Owner[_productId]));//卖家
         address arbiter = msg.sender; //仲裁人
 
         //仲裁人不允许是买家或者卖家

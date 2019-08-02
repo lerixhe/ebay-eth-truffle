@@ -8,7 +8,6 @@ contract TestEcommerceStore {
   event myEvent(address,address,address,address);
   // 先给测试合约转钱，以供测试
   uint public initialBalance = 1 ether;
-
   function beforeAll() public{
     // es = EcommerceStore(DeployedAddresses.EcommerceStore());
     es = new EcommerceStore();
