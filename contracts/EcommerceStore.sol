@@ -1,4 +1,5 @@
 pragma solidity ^0.5.10;
+import "./Escrow.sol";
 
 contract EcommerceStore {
 
@@ -193,5 +194,44 @@ contract EcommerceStore {
         ProductDetails storage productDetails = ProductId2ProductDetails[_productId];
 
         return (productDetails.highestBidder, productDetails.highestBid, productDetails.secondHighestBid, productDetails.totalBids);
+    }
+
+    //4.终结拍卖的方法
+    mapping(uint => address) public productToEscrow;//存储产品id和仲裁合约地址的集合
+    function finalaizeAuction(uint _productId) public {
+
+        ProductDetails storage productDetails = ProductId2ProductDetails[_productId];
+
+        address payable buyer = productDetails.highestBidder; //买家
+        address seller = ProductId2Owner[_productId];//卖家
+        address arbiter = msg.sender; //仲裁人
+
+        //仲裁人不允许是买家或者卖家
+        require(arbiter != buyer && arbiter != seller,'arbiter cannot be buyer or seller!');
+
+        //限定仅在揭标之后才可以进行仲裁
+        //require(now > product.auctionEndTime);
+
+        require(productDetails.status == ProductStatus.Open,'the product status is not open!'); //Open, Sold, Unsold
+
+        //如果竞标了，但是没有揭标，那么也是没有卖出去(自行拓展)
+        if (productDetails.totalBids == 0) {
+            // 无人竞标
+            productDetails.status = ProductStatus.Unsold;
+        } else {
+            productDetails.status = ProductStatus.Sold;
+        }
+        // 剩下新的仲裁合约，开启投票，并将成交金额转入仲裁合约。
+            //这是构造的时候传钱，constructor加上payable关键字
+            //address escrow = (new Escrow).value(25)(buyer, seller, arbiter)
+            // 这是fallback转钱，注意加上fallback
+        Escrow escrow = new Escrow(buyer, seller, arbiter);
+        address payable escrowAddr = address(int160(address(escrow)));
+        escrowAddr.transfer(productDetails.secondHighestBid);
+        // 存储 商品id=>仲裁合约
+        productToEscrow[_productId] = escrowAddr;
+
+        //因为以次高价成交，比用户意向价格要低，需退还差价 30- 25 = 5 ， 30是理想出价，25是次高
+        buyer.transfer(productDetails.highestBid - productDetails.secondHighestBid);
     }
 }
