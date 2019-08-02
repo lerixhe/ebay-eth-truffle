@@ -6,22 +6,36 @@ import "../contracts/EcommerceStore.sol";
 contract TestEcommerceStore {
   EcommerceStore es;
   event myEvent(address,address,address,address);
+  // 先给测试合约转钱，以供测试
+  uint public initialBalance = 1 ether;
 
-  // function beforeAll() public{
-  //   // es = EcommerceStore(DeployedAddresses.EcommerceStore());
-  //   es = new EcommerceStore();
-  //   es.addProductToStore("景德镇XXX","瓷器","23ed323","23e332",234232,2342343,1000,1);
-
-  // }
-  // function testEcommerceStoreproductIndex() public {
-  //   Assert.equal(es.productIndex(),1, "productIndex should be 1 ");
-  // }
-  function testEcommerceStoreProductId2Owner() public {
+  function beforeAll() public{
+    // es = EcommerceStore(DeployedAddresses.EcommerceStore());
     es = new EcommerceStore();
     es.addProductToStore("景德镇XXX","瓷器","23ed323","23e332",234232,2342343,1000,1);
+  }
+  // 测试合约产品id计数器的状态
+  function testEcommerceStoreproductIndex() public {
+    Assert.equal(es.productIndex(),1, "productIndex should be 1 ");
+  }
+  // 测试根据产品id是否成功找到拍卖人
+  function testEcommerceStoreProductId2Owner() public {
     emit myEvent(msg.sender,address(this),es.ProductId2Owner(1),address(es));
-    Assert.equal(address(this),address(es), "should be same ");
-
     // 1.测试合约的部署者，2.测试合约实例本身 3.目标合约的部署者（测试合约本身）4.最终被部署的合约本身
+    Assert.equal(address(this),es.ProductId2Owner(1), "should be same ");
+  }
+  // 测试根据产品id，能否找到产品信息
+  function testEcommerceStoreProductId2ProductInfo() public{
+    string memory name;
+    (,name,,,,) = es.ProductId2ProductInfo(1);
+    // EcommerceStore.ProductInfo storage pro = es.ProductId2ProductInfo(1);
+    Assert.equal(name,"景德镇XXX","should be same");
+  }
+  // 测试出价是否成功,判断是否找到出价信息
+  function testEcommerceStoreGetBidById() public{
+    es.bid.value(500)(1,100,"lalala");
+    uint price;
+    (,price,,) = es.getBidById(1,100,"lalala");
+    Assert.equal(price,500,"should be same");
   }
 }
