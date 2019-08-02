@@ -12,7 +12,10 @@ contract TestEcommerceStore {
   function beforeAll() public{
     // es = EcommerceStore(DeployedAddresses.EcommerceStore());
     es = new EcommerceStore();
+    // 给合约添加1个商品
     es.addProductToStore("景德镇XXX","瓷器","23ed323","23e332",234232,2342343,1000,1);
+    // 出价1次
+    es.bid.value(500)(1,100,"lalala");
   }
   // 测试合约产品id计数器的状态
   function testEcommerceStoreproductIndex() public {
@@ -33,9 +36,14 @@ contract TestEcommerceStore {
   }
   // 测试出价是否成功,判断是否找到出价信息
   function testEcommerceStoreGetBidById() public{
-    es.bid.value(500)(1,100,"lalala");
+    
     uint price;
     (,price,,) = es.getBidById(1,100,"lalala");
     Assert.equal(price,500,"should be same");
+  }
+  // 测试合约出价之后的余额
+  function testEcommerceStoreGetBalance() public{
+    uint balance = es.getBalance();
+    Assert.equal(balance,500,"should be same");
   }
 }

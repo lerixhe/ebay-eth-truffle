@@ -110,4 +110,8 @@ contract EcommerceStore {
         Bid memory bidLocal = product.bids[msg.sender][bytesHash];
         return (bidLocal.productId, bidLocal.price, bidLocal.isRevealed, bidLocal.bidder);
     }
+     // 辅助函数(2):返回当前合约的余额
+    function getBalance() public view returns (uint){
+        return address(this).balance;
+    }
 }
