@@ -13,9 +13,15 @@ contract TestEcommerceStore {
     // es = EcommerceStore(DeployedAddresses.EcommerceStore());
     es = new EcommerceStore();
     // 给合约添加1个商品
-    es.addProductToStore("景德镇XXX","瓷器","23ed323","23e332",234232,2342343,1000,1);
-    // 出价1次
-    es.bid.value(500)(1,100,"lalala");
+    es.addProductToStore("景德镇XXX","瓷器","23ed323","23e332",234232,2342343,500,1);
+    // 出价3次
+    es.bid.value(5000)(1,1000,"lalala");
+    es.bid.value(5000)(1,2000,"heiheihei");
+    es.bid.value(6000)(1,1500,"wawawa");
+    // 揭拍3次
+    es.revealBid(1,1000,"lalala");
+    es.revealBid(1,2000,"heiheihei");
+    es.revealBid(1,1500,"wawawa");
   }
   // 测试合约产品id计数器的状态
   function testEcommerceStoreproductIndex() public {
@@ -36,14 +42,27 @@ contract TestEcommerceStore {
   }
   // 测试出价是否成功,判断是否找到出价信息
   function testEcommerceStoreGetBidById() public{
-    
     uint price;
-    (,price,,) = es.getBidById(1,100,"lalala");
-    Assert.equal(price,500,"should be same");
+    (,price,,) = es.getBidById(1,1000,"lalala");
+    Assert.equal(price,5000,"should be same");
   }
   // 测试合约出价之后的余额
   function testEcommerceStoreGetBalance() public{
     uint balance = es.getBalance();
-    Assert.equal(balance,500,"should be same");
+    Assert.equal(balance,2000,"should be same");
   }
+  // 测试揭拍后，的最高出价信息
+  function testEcommerceStoreGetHightBidInfo()public{
+    address payable addr;
+    uint high;
+    uint secondHigh;
+    uint total;
+    (addr,high,secondHigh,total) = es.getHightBidInfo(1);
+    Assert.equal(addr,address(this),"should be same");
+    Assert.equal(high,2000,"should be same");
+    Assert.equal(secondHigh,1500,"should be same");
+    Assert.equal(total,3,"should be same");
+  }
+  // 用来接收被测试合约的转账。大坑（若干小时）
+  function() external payable { }
 }
