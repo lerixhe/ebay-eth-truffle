@@ -9,11 +9,16 @@
   },
   "devDependencies": {
     "copy-webpack-plugin": "^4.6.0",
+    "css-loader": "^3.1.0",
+    "style-loader": "^0.23.1",
     "webpack": "^4.28.1",
     "webpack-cli": "^3.2.1",
     "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
+    "ipfs-api": "^26.1.2",
+    "jquery": "^3.4.1",
+    "truffle-contract": "^4.0.15",
     "web3": "^1.0.0-beta.37"
   }
 }

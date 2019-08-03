@@ -1,37 +1,39 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>MetaCoin | Truffle Webpack Demo w/ Frontend</title>
-  </head>
-  <style>
-    input {
-      display: block;
-      margin-bottom: 12px;
-    }
-  </style>
-  <body>
-    <h1>MetaCoin — Example Truffle Dapp</h1>
-    <p>You have <strong class="balance">loading...</strong> META</p>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Decentralized Ecommerce Store</title>
+    <script type="text/javascript" src="index.js"></script>
+    <base href="/">
+</head>
+<body>
+<div class="top_header">
+    <h2>Ecommerce Store</h2>
+</div>
 
-    <h1>Send MetaCoin</h1>
+<div class="center_wrap">
+    <div class="left_con">
+        <h3>Categories</h3>
+        <ul class="left_menu" id="categories">
+        </ul>
+        <a href="list-item.html" class="add_goods">List Item</a>
+    </div>
+    <div class="right_con">
+        <div class="breadcrumb">当前位置：首页>商品列表</div>
+        <h4 class="list_title"><span>Products To Buy</span></h4>
+        <ul class="goods_list" id="product-list">
+        </ul>
 
-    <label for="amount">Amount:</label>
-    <input type="text" id="amount" placeholder="e.g. 95" />
+        <h4 class="list_title"><span>Products in Reveal Stage</span></h4>
+        <ul class="goods_list" id="product-reveal-list">
+        </ul>
 
-    <label for="receiver">To address:</label>
-    <input
-      type="text"
-      id="receiver"
-      placeholder="e.g. 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"
-    />
+    </div>
+</div>
 
-    <button onclick="App.sendCoin()">Send MetaCoin</button>
-
-    <p id="status"></p>
-    <p>
-      <strong>Hint:</strong> open the browser developer console to view any
-      errors and warnings.
-    </p>
-    <script src="index.js"></script>
-  </body>
+<div class="footer">
+    Copyright &copy; Mybid.com 2018,All Rights Reserved.
+</div>
+</body>
 </html>
+
